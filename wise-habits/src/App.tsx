@@ -5,6 +5,7 @@ import Login from './pages/login'
 import { Providers } from './components/providers/providers'
 import { ToastContainer } from 'react-toastify'
 import Register from './pages/register'
+import Dashboard from './pages/dashboard'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/home" element={<Dashboard />} />
         </Routes>
       </Providers>
     </main>
