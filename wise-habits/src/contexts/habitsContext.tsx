@@ -16,7 +16,7 @@ interface iHabits {
 
 interface iHabitsCreate {
   name: string
-  description: string
+  description?: string | undefined
   priority: number
 }
 

@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import { useHabitsContext } from '../../contexts/habitsContext'
 import { api } from '../../services/api'
+import CreateHabitsModal from '../../components/modal/createHabitsModal'
+import { useModalContext } from '../../contexts/modalContext'
 
 interface iHabits {
   id: string
@@ -14,6 +16,7 @@ interface iHabits {
 const Dashboard = () => {
   const [habits, setHabits] = useState<iHabits[] | null>(null)
   const [currentDate, setCurrentDate] = useState<string>('')
+  const { setCreateHabitsModalOpen } = useModalContext()
 
   const getHabits = async (): Promise<void> => {
     try {
@@ -41,6 +44,7 @@ const Dashboard = () => {
 
   return (
     <div>
+      <CreateHabitsModal />
       <h2>Home</h2>
       <div>
         <p>Data Atual: {currentDate}</p>
@@ -62,7 +66,7 @@ const Dashboard = () => {
         </ul>
       </div>
       <div>
-        <button>
+        <button type='button' onClick={() => setCreateHabitsModalOpen(true)}>
           +
         </button>
       </div>

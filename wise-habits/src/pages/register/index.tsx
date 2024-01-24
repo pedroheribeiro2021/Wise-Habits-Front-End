@@ -14,7 +14,7 @@ interface iDataRegister {
 }
 
 const RegisterSchema = yup.object().shape({
-  name: yup.string().required('E-mail obrigatório'),
+  name: yup.string().required('Nome obrigatório'),
   email: yup.string().required('E-mail obrigatório'),
   password: yup.string().required('Senha obrigatória'),
 })
