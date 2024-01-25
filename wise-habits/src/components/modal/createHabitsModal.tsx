@@ -1,6 +1,5 @@
 import * as yup from 'yup'
 import React, { useState } from 'react'
-import ReactModal from 'react-modal'
 import { useModalContext } from '../../contexts/modalContext'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -37,6 +36,7 @@ const CreateHabitsModal = () => {
   const {
     register,
     handleSubmit,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors },
   } = useForm<iHabitsRegister>({
     resolver: yupResolver(RegisterSchema),
@@ -53,10 +53,8 @@ const CreateHabitsModal = () => {
 
   const handleCheckboxChange = (day: string) => {
     if (selectedWeekDays.includes(day)) {
-      // Se já estiver selecionado, remova
       setSelectedWeekDays(selectedWeekDays.filter((selectedDay: string) => selectedDay !== day))
     } else {
-      // Se não estiver selecionado, adicione
       setSelectedWeekDays([...selectedWeekDays, day])
     }
   }
