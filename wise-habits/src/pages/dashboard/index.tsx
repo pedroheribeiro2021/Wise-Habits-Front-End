@@ -11,6 +11,7 @@ interface iHabits {
   description: string
   priority: number
   status: number
+  weekDays: string[]
 }
 
 const Dashboard = () => {
@@ -35,12 +36,16 @@ const Dashboard = () => {
     return today.toLocaleDateString('pt-BR', options)
   }
 
+  const shouldRenderHabit = (habit: iHabits): boolean => {
+
+    const currentDay = new Date().toLocaleDateString('pt-BR', { weekday: 'long' }).toLowerCase()
+    return habit.weekDays.map((day) => day.toLowerCase()).includes(currentDay)
+  }
+
   useEffect(() => {
     getHabits()
     setCurrentDate(getCurrentDate())
   }, [])
-
-  console.log('Current habits state:', habits)
 
   return (
     <div>
@@ -49,24 +54,27 @@ const Dashboard = () => {
       <div>
         <p>Data Atual: {currentDate}</p>
         <ul>
-          {habits?.map((habit, i) => (
-            <li key={i}>
-              <div>
-                <span>{habit.name}</span>
-                <input type="radio" name={`habito${i}`} id={`concluido${i}`} />
-                <label htmlFor={`concluido${i}`}>Concluído</label>
-                <input type="radio" name={`habito${i}`} id={`parcialmenteConcluido${i}`} />
-                <label htmlFor={`parcialmenteConcluido${i}`}>Parcialmente concluído</label>
-                <input type="radio" name={`habito${i}`} id={`naoConcluido${i}`} />
-                <label htmlFor={`naoConcluido${i}`}>Não concluído</label>
-              </div>
-              <p>{habit.description}</p>
-            </li>
-          ))}
+          {habits?.map(
+            (habit, i) =>
+              shouldRenderHabit(habit) && (
+                <li key={i}>
+                  <div>
+                    <span>{habit.name}</span>
+                    <input type="radio" name={`habito${i}`} id={`concluido${i}`} />
+                    <label htmlFor={`concluido${i}`}>Concluído</label>
+                    <input type="radio" name={`habito${i}`} id={`parcialmenteConcluido${i}`} />
+                    <label htmlFor={`parcialmenteConcluido${i}`}>Parcialmente concluído</label>
+                    <input type="radio" name={`habito${i}`} id={`naoConcluido${i}`} />
+                    <label htmlFor={`naoConcluido${i}`}>Não concluído</label>
+                  </div>
+                  <p>{habit.description}</p>
+                </li>
+              ),
+          )}
         </ul>
       </div>
       <div>
-        <button type='button' onClick={() => setCreateHabitsModalOpen(true)}>
+        <button type="button" onClick={() => setCreateHabitsModalOpen(true)}>
           +
         </button>
       </div>

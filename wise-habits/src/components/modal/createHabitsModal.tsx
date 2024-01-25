@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import React from 'react'
+import React, { useState } from 'react'
 import ReactModal from 'react-modal'
 import { useModalContext } from '../../contexts/modalContext'
 import { useForm } from 'react-hook-form'
@@ -23,6 +23,7 @@ const RegisterSchema = yup.object().shape({
 const CreateHabitsModal = () => {
   const { isCreateHabitsModalOpen, setCreateHabitsModalOpen } = useModalContext()
   const { createHabits } = useHabitsContext()
+  const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>([])
   const weekDays = [
     'domingo',
     'segunda-feira',
@@ -44,8 +45,20 @@ const CreateHabitsModal = () => {
   const closeModal = () => setCreateHabitsModalOpen(false)
 
   const submit = (data: iHabitsRegister) => {
-    createHabits(data)
+    const habitData = { ...data, weekDays: selectedWeekDays }
+    createHabits(habitData)
+    console.log(habitData)
     closeModal()
+  }
+
+  const handleCheckboxChange = (day: string) => {
+    if (selectedWeekDays.includes(day)) {
+      // Se já estiver selecionado, remova
+      setSelectedWeekDays(selectedWeekDays.filter((selectedDay: string) => selectedDay !== day))
+    } else {
+      // Se não estiver selecionado, adicione
+      setSelectedWeekDays([...selectedWeekDays, day])
+    }
   }
 
   return (
@@ -80,8 +93,12 @@ const CreateHabitsModal = () => {
           <div>
             {weekDays.map((day) => (
               <>
+                <input
+                  type="checkbox"
+                  onChange={() => handleCheckboxChange(day)}
+                  checked={selectedWeekDays.includes(day)}
+                />
                 <label key={day}>{day.charAt(0).toUpperCase() + day.slice(1)}</label>
-                <input type="checkbox" />
               </>
             ))}
           </div>

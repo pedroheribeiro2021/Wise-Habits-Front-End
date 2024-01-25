@@ -5,8 +5,10 @@ import Login from './pages/login'
 import { Providers } from './components/providers/providers'
 import Register from './pages/register'
 import Dashboard from './pages/dashboard'
+import ReactModal from 'react-modal'
 
 function App() {
+  ReactModal.setAppElement('#root')
   return (
     <main>
       <Providers>
