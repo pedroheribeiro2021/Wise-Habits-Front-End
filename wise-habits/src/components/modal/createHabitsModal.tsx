@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as yup from 'yup'
 import React, { useState } from 'react'
 import { useModalContext } from '../../contexts/modalContext'
@@ -11,6 +12,7 @@ interface iHabitsRegister {
   name: string
   description?: string | undefined
   priority: number
+  weekDays: { [day: string]: { status: number } }[]
 }
 
 const RegisterSchema = yup.object().shape({
@@ -39,23 +41,37 @@ const CreateHabitsModal = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors },
   } = useForm<iHabitsRegister>({
-    resolver: yupResolver(RegisterSchema),
+    // resolver: yupResolver(RegisterSchema),
   })
 
   const closeModal = () => setCreateHabitsModalOpen(false)
 
   const submit = (data: iHabitsRegister) => {
-    const habitData = { ...data, weekDays: selectedWeekDays }
+    const habitData = {
+      ...data,
+      weekDays: selectedWeekDays.map(day => day.toLowerCase()),
+    }
+  
     createHabits(habitData)
     console.log(habitData)
     closeModal()
   }
+  
 
   const handleCheckboxChange = (day: string) => {
-    if (selectedWeekDays.includes(day)) {
-      setSelectedWeekDays(selectedWeekDays.filter((selectedDay: string) => selectedDay !== day))
+    if (typeof day !== 'string') {
+      console.error('Erro: day não é uma string', day)
+      return
+    }
+
+    const lowercasedDay = day.toLowerCase()
+
+    if (selectedWeekDays.includes(lowercasedDay)) {
+      setSelectedWeekDays(
+        selectedWeekDays.filter((selectedDay: string) => selectedDay !== lowercasedDay),
+      )
     } else {
-      setSelectedWeekDays([...selectedWeekDays, day])
+      setSelectedWeekDays([...selectedWeekDays, lowercasedDay])
     }
   }
 
@@ -90,14 +106,14 @@ const CreateHabitsModal = () => {
           <label htmlFor="weekDays">Dias da Semana</label>
           <div>
             {weekDays.map((day) => (
-              <>
+              <React.Fragment key={day}>
                 <input
                   type="checkbox"
                   onChange={() => handleCheckboxChange(day)}
                   checked={selectedWeekDays.includes(day)}
                 />
-                <label key={day}>{day.charAt(0).toUpperCase() + day.slice(1)}</label>
-              </>
+                <label>{day.charAt(0).toUpperCase() + day.slice(1)}</label>
+              </React.Fragment>
             ))}
           </div>
           <button type="submit">Criar</button>

@@ -27,10 +27,10 @@ export interface iHabitsContext {
 }
 
 export const HabitsContext = createContext<iHabitsContext>({
-    habits: null,
-    createHabits: () => {},
-    getHabits: async () => {},
-  })
+  habits: null,
+  createHabits: () => {},
+  getHabits: async () => {},
+})
 
 export const HabitsProvider = ({ children }: iHabitsProps) => {
   const [habits, setHabits] = useState<iHabits | null>(null)
@@ -47,10 +47,17 @@ export const HabitsProvider = ({ children }: iHabitsProps) => {
   }
 
   const createHabits = async (data: iHabitsCreate) => {
+    const today = new Date()
+    const formattedDate = today.toISOString().split('T')[0]
     try {
+      // getMoment()
+
       const resp = await api.post('/habits', data)
       console.log(resp.data)
       setHabits(resp.data)
+
+      const habitStatus = await api.post(`/habits/${resp.data.id}/status`, { statusValue: 0, date: formattedDate })
+      console.log(habitStatus.data)
     } catch (err) {
       console.log(err)
     }

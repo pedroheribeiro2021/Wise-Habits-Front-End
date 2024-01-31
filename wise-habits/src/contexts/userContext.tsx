@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AxiosError } from 'axios'
 import React, { ReactNode, SetStateAction, useState, useEffect, useContext, createContext } from 'react'
 import { useNavigate } from 'react-router'
