@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AxiosError } from 'axios'
-import React, { ReactNode, SetStateAction, useState, useEffect, useContext, createContext } from 'react'
+import React, {
+  ReactNode,
+  SetStateAction,
+  useState,
+  useEffect,
+  useContext,
+  createContext,
+} from 'react'
 import { useNavigate } from 'react-router'
 import { api } from '../services/api'
 import { toast } from 'react-toastify'
@@ -45,24 +52,24 @@ export const UserProvider = ({ children }: iUserProps) => {
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    (async () => {
-      const token = localStorage.getItem('@token')
-      if (token) {
-        try {
-          const resp: iUser = await api.get(`/profile`, {
-            headers: { Authorization: 'Bearer ' + token },
-          })
-          setUser(resp)
-          navigate('/dashboard')
-          console.log(resp)
-        } catch (error) {
-          localStorage.removeItem('@token')
-          navigate('/')
-        }
-      }
-    })()
-  }, [])
+  // useEffect(() => {
+  //   (async () => {
+  //     const token = localStorage.getItem('@token')
+  //     if (token) {
+  //       try {
+  //         const resp: iUser = await api.get(`/profile`, {
+  //           headers: { Authorization: 'Bearer ' + token },
+  //         })
+  //         setUser(resp)
+  //         navigate('/dashboard')
+  //         console.log(resp)
+  //       } catch (error) {
+  //         localStorage.removeItem('@token')
+  //         navigate('/')
+  //       }
+  //     }
+  //   })()
+  // }, [])
 
   const userLogin = (data: iDataLogin) => {
     api
@@ -73,27 +80,11 @@ export const UserProvider = ({ children }: iUserProps) => {
         localStorage.setItem('@token', resp.data.token)
         localStorage.setItem('@id', resp.data.id)
         navigate('/home')
-        toast.success('Login efetuado com sucesso!', {
-          position: 'top-right',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        })
+        // toast.success('Login efetuado com sucesso!')
       })
       .catch((err) => {
         console.log(err)
-        toast.error('Erro de credenciais!', {
-          position: 'top-right',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        })
+        // toast.error('Erro de credenciais!')
       })
   }
 
@@ -102,29 +93,23 @@ export const UserProvider = ({ children }: iUserProps) => {
       .post(`/user`, data)
       .then((resp) => {
         console.log(resp)
-        toast.success('Cadastro efetuado com sucesso!', {
-          position: 'top-right',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        })
+        // toast.success('Cadastro efetuado com sucesso!', {
+        //   autoClose: 2000,
+        // })
         navigate('/')
       })
       .catch((err) => {
         const requestError = err as AxiosError<iApiError>
         console.log(err)
-        toast.error(requestError.response?.data.message, {
-          position: 'top-right',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        })
+        // toast.error(requestError.response?.data.message, {
+        //   position: 'top-right',
+        //   autoClose: 2000,
+        //   hideProgressBar: false,
+        //   closeOnClick: true,
+        //   pauseOnHover: true,
+        //   draggable: true,
+        //   progress: undefined,
+        // })
       })
   }
 

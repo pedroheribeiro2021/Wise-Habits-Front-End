@@ -35,6 +35,9 @@ export const HabitsContext = createContext<iHabitsContext>({
 export const HabitsProvider = ({ children }: iHabitsProps) => {
   const [habits, setHabits] = useState<iHabits | null>(null)
 
+  const token = localStorage.getItem('@token')
+  // const id = localStorage.getItem('id')
+
   const getHabits = async (): Promise<void> => {
     try {
       const { data } = await api.get('/habits')
@@ -47,17 +50,23 @@ export const HabitsProvider = ({ children }: iHabitsProps) => {
   }
 
   const createHabits = async (data: iHabitsCreate) => {
-    const today = new Date()
-    const formattedDate = today.toISOString().split('T')[0]
+    // const today = new Date()
+    // const formattedDate = today.toISOString().split('T')[0]
+    console.log(token)
     try {
       // getMoment()
-
-      const resp = await api.post('/habits', data)
+      const resp = await api.post('/habits', data, {
+        headers: { authorization: `Bearer ${token}` },
+      })
       console.log(resp.data)
       setHabits(resp.data)
 
-      const habitStatus = await api.post(`/habits/${resp.data.id}/status`, { statusValue: 0, date: formattedDate })
-      console.log(habitStatus.data)
+      // const habitStatus = await api.post(`/habits/${resp.data.id}/status`, {
+      //   statuses: { [formattedDate]: 0 }
+      // }, {
+      //   headers: { authorization: `Bearer ${token}` },
+      // })
+      // console.log(habitStatus.data)
     } catch (err) {
       console.log(err)
     }
