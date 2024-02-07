@@ -6,6 +6,7 @@ import { Providers } from './components/providers/providers'
 import Register from './pages/register'
 import Dashboard from './pages/dashboard'
 import ReactModal from 'react-modal'
+import HabitsChart from './pages/reports'
 
 function App() {
   ReactModal.setAppElement('#root')
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/home" element={<Dashboard />} />
+          <Route path="/graph" element={<HabitsChart />} />
         </Routes>
       </Providers>
     </main>

@@ -6,6 +6,8 @@ import CreateHabitsModal from '../../components/modal/createHabitsModal'
 import { useModalContext } from '../../contexts/modalContext'
 import { FaCheckDouble, FaCheck } from 'react-icons/fa'
 import BottomBar from '../../components/bottomNavigationBar'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 interface iStatus {
   id: number
@@ -25,9 +27,9 @@ const Dashboard = () => {
   const [habits, setHabits] = useState<iHabits[] | null>(null)
   const [currentDate, setCurrentDate] = useState<string>('')
   const [today, setToday] = useState<string>(new Date().toISOString().split('T')[0])
-  // const [today, setToday] = useState<string>('2024-02-06')
-  // const [status, setStatus] = useState<boolean>()
+  // const [today, setToday] = useState<string>('2024-02-08')
   const [selectedTab, setSelectedTab] = useState('home')
+  const [selectedDate, setSelectedDate] = useState(new Date())
   const { setCreateHabitsModalOpen } = useModalContext()
 
   const token = localStorage.getItem('@token')
@@ -42,15 +44,26 @@ const Dashboard = () => {
     }
   }
 
+  useEffect(() => {
+    getHabits()
+    setCurrentDate(getCurrentDate())
+    console.log(today)
+  }, [])
+
   const getCurrentDate = (): string => {
     const today = new Date()
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } as const
     return today.toLocaleDateString('pt-BR', options)
   }
 
+  // const shouldRenderHabit = (habit: iHabits): boolean => {
+  //   const currentDay = new Date().toLocaleDateString('pt-BR', { weekday: 'long' })
+  //   console.log(currentDay)
+  //   return habit.weekDays.includes(currentDay)
+  // }
+
   const shouldRenderHabit = (habit: iHabits): boolean => {
-    const currentDay = new Date().toLocaleDateString('pt-BR', { weekday: 'long' })
-    console.log(currentDay)
+    const currentDay = selectedDate.toLocaleDateString('pt-BR', { weekday: 'long' }).toLowerCase()
     return habit.weekDays.includes(currentDay)
   }
 
@@ -94,41 +107,49 @@ const Dashboard = () => {
     }
   }
 
-  useEffect(() => {
-    getHabits()
-    setCurrentDate(getCurrentDate())
-    console.log(today)
-  }, [])
-
   const handleTabChange = (event: unknown, newValue: React.SetStateAction<string>) => {
     setSelectedTab(newValue)
   }
 
-  const CheckIcons = () => {
-    return (
-      <>
-        {habits?.map((habit, i) => {
-          return (
-            shouldRenderHabit(habit) && (
-              <div key={i}>
-                {habit.statuses.map((status, index) => {
-                  const statusValue = status.statuses[today]
-                  return (
-                    <div key={index}>
-                      {statusValue === 10 ? (
-                        <FaCheckDouble style={{ color: 'green' }} />
-                      ) : (
-                        statusValue === 5 && <FaCheck style={{ color: 'green' }} />
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            )
-          )
-        })}
-      </>
-    )
+  // const CheckIcons = () => {
+  //   const formattedSelectedDate = selectedDate.toISOString().split('T')[0]
+
+  //   return (
+  //     <>
+  //       {habits?.map((habit) => {
+  //         return (
+  //           shouldRenderHabit(habit) && (
+  //             <div key={habit.id}>
+  //               {habit.statuses.map((status) => {
+  //                 const statusValue = status.statuses[formattedSelectedDate] // Usa a data formatada para verificação
+  //                 return (
+  //                   <div key={status.id}>
+  //                     {statusValue === 10 ? (
+  //                       <FaCheckDouble style={{ color: 'green' }} />
+  //                     ) : (
+  //                       statusValue === 5 && <FaCheck style={{ color: 'green' }} />
+  //                     )}
+  //                   </div>
+  //                 )
+  //               })}
+  //             </div>
+  //           )
+  //         )
+  //       })}
+  //     </>
+  //   )
+  // }
+
+  const navigateToPreviousDay = () => {
+    const currentDate = new Date(selectedDate)
+    currentDate.setDate(currentDate.getDate() - 1)
+    setSelectedDate(new Date(currentDate)) // Manter como objeto Date
+  }
+
+  const navigateToNextDay = () => {
+    const currentDate = new Date(selectedDate)
+    currentDate.setDate(currentDate.getDate() + 1)
+    setSelectedDate(new Date(currentDate)) // Manter como objeto Date
   }
 
   return (
@@ -137,6 +158,15 @@ const Dashboard = () => {
       <h2>Home</h2>
       <div>
         <p>Data Atual: {currentDate}</p>
+        <div>
+          <button onClick={navigateToPreviousDay}>Dia Anterior</button>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date: Date) => setSelectedDate(date)}
+            dateFormat="dd/MM/yyyy"
+          />
+          <button onClick={navigateToNextDay}>Próximo Dia</button>
+        </div>
         <ul>
           {habits?.map(
             (habit, i) =>
@@ -145,9 +175,22 @@ const Dashboard = () => {
                 <li key={i}>
                   <div>
                     <span>{habit.name}</span>
+                    {habit.statuses.map((status) => {
+                      const statusDate = selectedDate.toISOString().split('T')[0]
+                      const statusValue = status.statuses[statusDate]
+                      if (statusValue === 10) {
+                        return <FaCheckDouble key={status.id} style={{ color: 'green' }} />
+                      } else if (statusValue === 5) {
+                        return <FaCheck key={status.id} style={{ color: 'green' }} />
+                      }
+                      return null
+                    })}
                     <input
                       // checked={habit.statuses.statusValue === 10}
-                      checked={habit.statuses.some((status) => status.statuses[today] === 10)}
+                      checked={habit.statuses.some(
+                        (status) =>
+                          status.statuses[selectedDate.toISOString().split('T')[0]] === 10,
+                      )}
                       type="radio"
                       name={`habito${i}`}
                       id={`concluido${i}`}
@@ -156,7 +199,9 @@ const Dashboard = () => {
                     <label htmlFor={`concluido${i}`}>Concluído</label>
                     <input
                       // checked={habit.statuses.statusValue === 5}
-                      checked={habit.statuses.some((status) => status.statuses[today] === 5)}
+                      checked={habit.statuses.some(
+                        (status) => status.statuses[selectedDate.toISOString().split('T')[0]] === 5,
+                      )}
                       type="radio"
                       name={`habito${i}`}
                       id={`parcialmenteConcluido${i}`}
@@ -166,14 +211,16 @@ const Dashboard = () => {
                     <input
                       // checked={habit.statuses.statusValue === 0}
                       // value={habit.statuses.statusValue}
-                      checked={habit.statuses.some((status) => status.statuses[today] === 0)}
+                      checked={habit.statuses.some(
+                        (status) => status.statuses[selectedDate.toISOString().split('T')[0]] === 0,
+                      )}
                       type="radio"
                       name={`habito${i}`}
                       id={`naoConcluido${i}`}
                       onChange={() => updateHabitStatus(habit.id, today, 0)}
                     />
                     <label htmlFor={`naoConcluido${i}`}>Não concluído</label>
-                    {CheckIcons()}
+                    {/* {CheckIcons()} */}
                   </div>
                   <p>{habit.description}</p>
                 </li>
