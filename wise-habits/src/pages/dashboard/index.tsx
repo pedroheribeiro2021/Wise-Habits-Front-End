@@ -48,6 +48,7 @@ const Dashboard = () => {
     getHabits()
     setCurrentDate(getCurrentDate())
     console.log(today)
+    console.log(habits)
   }, [])
 
   const getCurrentDate = (): string => {
