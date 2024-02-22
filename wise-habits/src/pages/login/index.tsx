@@ -40,8 +40,8 @@ const Login = () => {
       </label>
       <br />
       <button type="submit">Entrar</button>
-      <span>Ainda não possui uma conta?</span>
-      <Link to={'/register'} relative="path">
+      <span>Ainda não possui uma conta? </span>
+      <Link to={'/register'} relative="path" style={{textDecoration: 'underline'}}>
         Cadastre-se
       </Link>
     </form>
