@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactNode, useContext, useState } from 'react'
 import { createContext } from 'react'
 

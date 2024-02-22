@@ -1,14 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useState } from 'react'
 import BottomBar from '../../components/bottomNavigationBar'
 import { useHabitsContext } from '../../contexts/habitsContext'
 import DatePicker from 'react-datepicker'
 import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts'
-
-interface StatusEntry {
-  date: string // Data no formato YYYY-MM-DD
-  status: number // Status, onde 0 = não concluído, 5 = parcialmente concluído, 10 = concluído
-}
 
 interface iStatus {
   id: number
