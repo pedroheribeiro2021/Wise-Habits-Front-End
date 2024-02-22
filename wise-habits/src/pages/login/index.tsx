@@ -4,6 +4,8 @@ import React, { useContext } from 'react'
 import { UserContext } from '../../contexts/userContext'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { LoginStyle } from './style'
+import logo from "../../assets/Wise habits.png"
 
 interface iDataLogin {
   email: string
@@ -28,23 +30,24 @@ const Login = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit(submit)}>
-      <label>
-        Email:
-        <input type="email" id="email" placeholder="Digite seu E-mail" {...register('email')} />
-      </label>
-      <br />
-      <label>
-        Senha:
-        <input type="password" id="password" placeholder="Senha" {...register('password')} />
-      </label>
-      <br />
-      <button type="submit">Entrar</button>
-      <span>Ainda não possui uma conta? </span>
-      <Link to={'/register'} relative="path" style={{textDecoration: 'underline'}}>
-        Cadastre-se
-      </Link>
-    </form>
+    <LoginStyle>
+      <img src={logo} className='logo' />
+      <form onSubmit={handleSubmit(submit)}>
+        <label>
+          Email:
+          <input type="email" id="email" placeholder="Digite seu E-mail" {...register('email')} />
+        </label>
+        <label>
+          Senha:
+          <input type="password" id="password" placeholder="Senha" {...register('password')} />
+        </label>
+        <button type="submit">Entrar</button>
+        <span>Ainda não possui uma conta? </span>
+        <Link to={'/register'} relative="path" style={{ textDecoration: 'underline' }}>
+          Cadastre-se
+        </Link>
+      </form>
+    </LoginStyle>
   )
 }
 

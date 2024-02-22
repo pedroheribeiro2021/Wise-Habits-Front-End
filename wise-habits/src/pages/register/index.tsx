@@ -36,7 +36,7 @@ const Register = () => {
   }
 
   return (
-    <>
+    <main>
       <Link to={'/'} style={{textDecoration: 'underline'}}>Voltar</Link>
       <form onSubmit={handleSubmit(submit)}>
         <h3>Crie sua conta</h3>
@@ -55,7 +55,7 @@ const Register = () => {
         />
         <button type="submit">Cadastrar</button>
       </form>
-    </>
+    </main>
   )
 }
 

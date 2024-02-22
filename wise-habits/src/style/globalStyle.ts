@@ -46,6 +46,13 @@ button {
     border: none;
     border-radius: 4px;
     padding: 10px;
+    cursor: pointer;
+}
+
+.logo {
+    margin: 5% auto;
+    height: 200px;
+    width: 200px;
 }
 
 `
