@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const LoginStyle = styled.main`
+export const RegisterStyle = styled.main`
 
     display: flex;
     flex-direction: column;

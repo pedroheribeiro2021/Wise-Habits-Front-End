@@ -5,7 +5,7 @@ import { UserContext } from '../../contexts/userContext'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { LoginStyle } from './style'
-import logo from "../../assets/Wise habits.png"
+import logo from '../../assets/Wise habits.png'
 
 interface iDataLogin {
   email: string
@@ -31,8 +31,9 @@ const Login = () => {
 
   return (
     <LoginStyle>
-      <img src={logo} className='logo' />
+      <img src={logo} className="logo" />
       <form onSubmit={handleSubmit(submit)}>
+        <h3>Login</h3>
         <label>
           Email:
           <input type="email" id="email" placeholder="Digite seu E-mail" {...register('email')} />

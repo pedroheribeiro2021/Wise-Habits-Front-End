@@ -6,6 +6,8 @@ import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { UserContext } from '../../contexts/userContext'
+import logo from '../../assets/Wise habits.png'
+import { RegisterStyle } from './style'
 
 interface iDataRegister {
   name: string
@@ -36,26 +38,40 @@ const Register = () => {
   }
 
   return (
-    <main>
-      <Link to={'/'} style={{textDecoration: 'underline'}}>Voltar</Link>
+    <RegisterStyle>
+      <img src={logo} className="logo" />
       <form onSubmit={handleSubmit(submit)}>
         <h3>Crie sua conta</h3>
-        <label htmlFor="name">Nome</label>
-        <input type="text" id="name" placeholder="Digite aqui seu nome" {...register('name')} />
+        <label htmlFor="name">
+          Nome
+          <input type="text" id="name" placeholder="Digite aqui seu nome" {...register('name')} />
+        </label>
 
-        <label htmlFor="">Email</label>
-        <input type="email" id="email" placeholder="Digite aqui seu Email" {...register('email')} />
+        <label htmlFor="">
+          Email
+          <input
+            type="email"
+            id="email"
+            placeholder="Digite aqui seu Email"
+            {...register('email')}
+          />
+        </label>
 
-        <label htmlFor="password">Senha</label>
-        <input
-          type="password"
-          id="password"
-          placeholder="Digite aqui seu Senha"
-          {...register('password')}
-        />
+        <label htmlFor="password">
+          Senha
+          <input
+            type="password"
+            id="password"
+            placeholder="Digite aqui seu Senha"
+            {...register('password')}
+          />
+        </label>
         <button type="submit">Cadastrar</button>
+        <Link to={'/'} style={{ textDecoration: 'underline' }}>
+          Voltar
+        </Link>
       </form>
-    </main>
+    </RegisterStyle>
   )
 }
 
