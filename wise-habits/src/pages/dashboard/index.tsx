@@ -19,7 +19,7 @@ interface iStatus {
   statuses: { [key: string]: number }
 }
 
-interface iHabits {
+export interface iHabits {
   id: string
   name: string
   description: string
