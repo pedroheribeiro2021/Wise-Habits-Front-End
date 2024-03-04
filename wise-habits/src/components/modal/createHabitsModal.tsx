@@ -49,14 +49,13 @@ const CreateHabitsModal = () => {
   const submit = (data: iHabitsRegister) => {
     const habitData = {
       ...data,
-      weekDays: selectedWeekDays.map(day => day.toLowerCase()),
+      weekDays: selectedWeekDays.map((day) => day.toLowerCase()),
     }
-  
+
     createHabits(habitData)
     console.log(habitData)
     closeModal()
   }
-  
 
   const handleCheckboxChange = (day: string) => {
     if (typeof day !== 'string') {
@@ -83,7 +82,7 @@ const CreateHabitsModal = () => {
       className="modal-content"
     >
       <div>
-        <div>
+        <div className="header">
           <h2>Criar hábito</h2>
           <button onClick={closeModal}>{<AiOutlineClose />}</button>
         </div>
@@ -103,16 +102,18 @@ const CreateHabitsModal = () => {
             <option value={2}>Moderada</option>
             <option value={3}>Baixa</option>
           </select>
-          <label htmlFor="weekDays">Dias da Semana</label>
+          <label htmlFor="weekDays">Dias da Semana:</label>
           <div>
             {weekDays.map((day) => (
               <React.Fragment key={day}>
-                <input
-                  type="checkbox"
-                  onChange={() => handleCheckboxChange(day)}
-                  checked={selectedWeekDays.includes(day)}
-                />
-                <label>{day.charAt(0).toUpperCase() + day.slice(1)}</label>
+                <div className='weekDays'>
+                  <input
+                    type="checkbox"
+                    onChange={() => handleCheckboxChange(day)}
+                    checked={selectedWeekDays.includes(day)}
+                  />
+                  <label>{day.charAt(0).toUpperCase() + day.slice(1)}</label>
+                </div>
               </React.Fragment>
             ))}
           </div>

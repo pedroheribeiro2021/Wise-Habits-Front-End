@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useState } from 'react'
 import BottomBar from '../../components/bottomNavigationBar'
-import { useHabitsContext } from '../../contexts/habitsContext'
 import DatePicker from 'react-datepicker'
 import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts'
 import { ReportsStyle } from './style'
