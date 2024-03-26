@@ -174,7 +174,7 @@ const Dashboard = () => {
             selected={selectedDate}
             onChange={(date: Date) => setSelectedDate(date)}
             dateFormat="dd/MM/yyyy"
-            className='center'
+            className="center"
           />
           <button onClick={navigateToNextDay} style={{ marginLeft: 5 }}>
             {/* Próximo Dia */}
@@ -216,7 +216,13 @@ const Dashboard = () => {
                           type="radio"
                           name={`habito${i}`}
                           id={`concluido${i}`}
-                          onChange={() => updateHabitStatus(habit.id, today, 10)}
+                          onChange={() =>
+                            updateHabitStatus(
+                              habit.id,
+                              selectedDate.toISOString().split('T')[0],
+                              10,
+                            )
+                          }
                         />
                       </div>
                       <div className="status_container">
@@ -230,7 +236,9 @@ const Dashboard = () => {
                           type="radio"
                           name={`habito${i}`}
                           id={`parcialmenteConcluido${i}`}
-                          onChange={() => updateHabitStatus(habit.id, today, 5)}
+                          onChange={() =>
+                            updateHabitStatus(habit.id, selectedDate.toISOString().split('T')[0], 5)
+                          }
                         />
                       </div>
                       <div className="status_container">
@@ -245,7 +253,9 @@ const Dashboard = () => {
                           type="radio"
                           name={`habito${i}`}
                           id={`naoConcluido${i}`}
-                          onChange={() => updateHabitStatus(habit.id, today, 0)}
+                          onChange={() =>
+                            updateHabitStatus(habit.id, selectedDate.toISOString().split('T')[0], 0)
+                          }
                         />
                       </div>
                     </div>
