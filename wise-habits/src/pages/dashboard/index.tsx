@@ -13,6 +13,7 @@ import { DashboardStyle } from './style'
 import { MdArrowRight } from 'react-icons/md'
 import { MdArrowLeft } from 'react-icons/md'
 import { VscCalendar } from 'react-icons/vsc'
+import { CiTrash } from 'react-icons/ci'
 
 interface iStatus {
   id: number
@@ -41,7 +42,9 @@ const Dashboard = () => {
 
   const getHabits = async (): Promise<void> => {
     try {
-      const { data } = await api.get('/habits')
+      const { data } = await api.get('/habits', {
+        headers: { authorization: `Bearer ${token}` },
+      })
       setHabits(data)
       console.log(habits)
     } catch (error) {
@@ -117,6 +120,22 @@ const Dashboard = () => {
     setSelectedTab(newValue)
   }
 
+  const deleteHabit = async (habitId: string) => {
+    if (window.confirm('Você tem certeza que deseja deletar este hábito?')) {
+      try {
+        await api.delete(`/habits/${habitId}`, {
+          headers: { authorization: `Bearer ${token}` },
+        })
+        setHabits((currentHabits) => currentHabits?.filter((habit) => habit.id !== habitId) ?? null)
+        // setHabits(habits => habits?.filter(habit => habit.id !== habitId));
+        alert('Hábito deletado com sucesso!')
+      } catch (error) {
+        console.error('Erro ao deletar o hábito:', error)
+        alert('Erro ao deletar o hábito.')
+      }
+    }
+  }
+
   // const CheckIcons = () => {
   //   const formattedSelectedDate = selectedDate.toISOString().split('T')[0]
 
@@ -158,9 +177,13 @@ const Dashboard = () => {
     setSelectedDate(new Date(currentDate)) // Manter como objeto Date
   }
 
+  const refreshHabits = async () => {
+    await getHabits()
+  }
+
   return (
     <DashboardStyle>
-      <CreateHabitsModal />
+      <CreateHabitsModal onHabitCreated={refreshHabits} />
       <h2>Início</h2>
       <VscCalendar style={{ margin: '8px 0', fontSize: 60 }} />
       <div>
@@ -189,19 +212,28 @@ const Dashboard = () => {
                 <li key={i} className="habit_card">
                   <div>
                     <div className="header">
-                      <span style={{ fontWeight: 'bold' }}>{habit.name}</span>
-                      {habit.statuses.map((status) => {
-                        const statusDate = selectedDate.toISOString().split('T')[0]
-                        const statusValue = status.statuses[statusDate]
-                        if (statusValue === 10) {
-                          return <FaCheckDouble key={status.id} style={{ color: 'green' }} />
-                        } else if (statusValue === 5) {
-                          return <FaCheck key={status.id} style={{ color: 'green' }} />
-                        } else if (statusValue === 0) {
-                          return <MdOutlineCancel key={status.id} style={{ color: 'red' }} />
-                        }
-                        return null
-                      })}
+                      <div className="name_icon">
+                        <span style={{ fontWeight: 'bold' }}>{habit.name}</span>
+                        {habit.statuses.map((status) => {
+                          const statusDate = selectedDate.toISOString().split('T')[0]
+                          const statusValue = status.statuses[statusDate]
+                          if (statusValue === 10) {
+                            return <FaCheckDouble key={status.id} style={{ color: 'green' }} />
+                          } else if (statusValue === 5) {
+                            return <FaCheck key={status.id} style={{ color: 'green' }} />
+                          } else if (statusValue === 0) {
+                            return <MdOutlineCancel key={status.id} style={{ color: 'red' }} />
+                          }
+                          return null
+                        })}
+                      </div>
+                      {/* <div> */}
+                      <CiTrash
+                        style={{ cursor: 'pointer', color: 'red' }}
+                        onClick={() => deleteHabit(habit.id)}
+                      />
+
+                      {/* </div> */}
                     </div>
                     <p>{habit.description}</p>
                     <div className="status">

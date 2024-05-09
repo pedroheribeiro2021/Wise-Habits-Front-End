@@ -15,15 +15,20 @@ interface iHabitsRegister {
   weekDays: { [day: string]: { status: number } }[]
 }
 
+interface CreateHabitsModalProps {
+  onHabitCreated: () => Promise<void>
+}
+
 const RegisterSchema = yup.object().shape({
   name: yup.string().required('Título obrigatório'),
   description: yup.string(),
   priority: yup.number().required('É necessário estipular uma prioridade para seu hábito'),
 })
 
-const CreateHabitsModal = () => {
+const CreateHabitsModal: React.FC<CreateHabitsModalProps> = ({ onHabitCreated }) => {
   const { isCreateHabitsModalOpen, setCreateHabitsModalOpen } = useModalContext()
   const { createHabits } = useHabitsContext()
+  const { getHabits } = useHabitsContext()
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>([])
   const weekDays = [
     'domingo',
@@ -44,7 +49,9 @@ const CreateHabitsModal = () => {
     // resolver: yupResolver(RegisterSchema),
   })
 
-  const closeModal = () => setCreateHabitsModalOpen(false)
+  const closeModal = () => {
+    setCreateHabitsModalOpen(false)
+  }
 
   const submit = (data: iHabitsRegister) => {
     const habitData = {
@@ -53,6 +60,7 @@ const CreateHabitsModal = () => {
     }
 
     createHabits(habitData)
+    onHabitCreated()
     console.log(habitData)
     closeModal()
   }
@@ -106,7 +114,7 @@ const CreateHabitsModal = () => {
           <div>
             {weekDays.map((day) => (
               <React.Fragment key={day}>
-                <div className='weekDays'>
+                <div className="weekDays">
                   <input
                     type="checkbox"
                     onChange={() => handleCheckboxChange(day)}

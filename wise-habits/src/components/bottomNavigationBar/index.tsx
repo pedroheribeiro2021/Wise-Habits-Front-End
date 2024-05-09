@@ -30,9 +30,9 @@ const BottomBar: React.FC<BottomBarProps> = ({ onTabChange, value }) => {
         zIndex: 100, // Garante que a barra fique acima de outros elementos
       }}
     >
-      <BottomNavigationAction label="Home" icon={<HomeIcon />} value="home" />
-      <BottomNavigationAction label="User" icon={<PersonIcon />} value="register" />
-      <BottomNavigationAction label="Gráfico" icon={<ShowChartIcon />} value="graph" />
+      <BottomNavigationAction label="Início" icon={<HomeIcon />} value="home" />
+      {/* <BottomNavigationAction label="User" icon={<PersonIcon />} value="register" /> */}
+      <BottomNavigationAction label="Gráficos" icon={<ShowChartIcon />} value="graph" />
     </BottomNavigation>
   )
 }
