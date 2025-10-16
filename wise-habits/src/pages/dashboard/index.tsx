@@ -4,6 +4,7 @@ import { api } from '../../services/api'
 import CreateHabitsModal from '../../components/modal/createHabitsModal'
 import { useModalContext } from '../../contexts/modalContext'
 import { FaCheckDouble, FaCheck } from 'react-icons/fa'
+import BottomBar from '../../components/bottomNavigationBar'
 
 interface iHabits {
   id: string
@@ -17,6 +18,7 @@ interface iHabits {
 const Dashboard = () => {
   const [habits, setHabits] = useState<iHabits[] | null>(null)
   const [currentDate, setCurrentDate] = useState<string>('')
+  const [selectedTab, setSelectedTab] = useState('home')
   const { setCreateHabitsModalOpen } = useModalContext()
 
   const getHabits = async (): Promise<void> => {
@@ -58,6 +60,11 @@ const Dashboard = () => {
     getHabits()
     setCurrentDate(getCurrentDate())
   }, [])
+
+  const handleTabChange = (event: unknown, newValue: React.SetStateAction<string>) => {
+    setSelectedTab(newValue)
+    // Adicione aqui a navegação ou a lógica específica para cada guia selecionada
+  }
 
   return (
     <div>
@@ -110,6 +117,7 @@ const Dashboard = () => {
           +
         </button>
       </div>
+      <BottomBar onTabChange={handleTabChange} value={selectedTab} />
     </div>
   )
 }
