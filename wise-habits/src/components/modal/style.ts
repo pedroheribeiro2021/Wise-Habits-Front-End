@@ -12,8 +12,7 @@ export const CreateHabitsModalStyled = styled(ReactModal)`
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 8px;
-  /* background-color: var(--cover); */
-  background-color: gray;
+  background-color: var(--color1);
   padding: 10px;
 
   .container_modal_items {
@@ -23,12 +22,24 @@ export const CreateHabitsModalStyled = styled(ReactModal)`
     width: 1px;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: var(--cover);
     border-radius: 3px;
   }
 
-  ::-webkit-scrollbar-track {
-    background-color: var(--cover);
+  .header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .weekDays {
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
 
   .close_modal {
@@ -41,33 +52,6 @@ export const CreateHabitsModalStyled = styled(ReactModal)`
       background-color: transparent;
       border: transparent;
       color: var(--grey4);
-    }
-  }
-
-  .register-form {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-
-    input {
-      height: 30px;
-      width: 100%;
-      padding: 8px;
-    }
-
-    button {
-      margin: 0 auto;
-    }
-  }
-
-  .input-date {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-
-    select {
-      height: 30px;
-      padding: 8px;
     }
   }
 `

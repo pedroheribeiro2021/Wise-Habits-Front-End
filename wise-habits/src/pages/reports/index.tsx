@@ -1,14 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useState } from 'react'
 import BottomBar from '../../components/bottomNavigationBar'
-import { useHabitsContext } from '../../contexts/habitsContext'
 import DatePicker from 'react-datepicker'
 import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts'
-
-interface StatusEntry {
-  date: string // Data no formato YYYY-MM-DD
-  status: number // Status, onde 0 = não concluído, 5 = parcialmente concluído, 10 = concluído
-}
+import { ReportsStyle } from './style'
+import { api } from '../../services/api'
+import { iHabits } from '../dashboard'
+import { format } from 'date-fns'
 
 interface iStatus {
   id: number
@@ -29,22 +28,33 @@ interface DateStatus {
 }
 
 const getFirstDayOfMonth = () => {
-  const today = new Date();
-  return new Date(today.getFullYear(), today.getMonth(), 1);
+  const today = new Date()
+  return new Date(today.getFullYear(), today.getMonth(), 1)
 }
 
 // Defina a função para obter o último dia do mês
 const getLastDayOfMonth = () => {
-  const today = new Date();
-  return new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  const today = new Date()
+  return new Date(today.getFullYear(), today.getMonth() + 1, 0)
 }
 
 const HabitsChart = () => {
   const [selectedTab, setSelectedTab] = useState('')
-  const [startDate, setStartDate] = useState(getFirstDayOfMonth()); // Inicializa com o primeiro dia do mês corrente
-  const [endDate, setEndDate] = useState(getLastDayOfMonth()); // Inicializa com o último dia do mês corrente
-  const { habits, getHabits } = useHabitsContext()
+  const [startDate, setStartDate] = useState(getFirstDayOfMonth()) // Inicializa com o primeiro dia do mês corrente
+  const [endDate, setEndDate] = useState(getLastDayOfMonth()) // Inicializa com o último dia do mês corrente
+  const [habits, setHabits] = useState<iHabits[] | null>(null)
+  // const { getHabits } = useHabitsContext()
   const safeHabits = habits || []
+
+  const getHabits = async (): Promise<void> => {
+    try {
+      const { data } = await api.get('/habits')
+      setHabits(data)
+      console.log(habits)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   useEffect(() => {
     getHabits()
@@ -89,6 +99,8 @@ const HabitsChart = () => {
   console.log(safeHabits)
   console.log(startDate)
   console.log(endDate)
+  console.log(habits)
+
   // @ts-ignore
   const filteredHabits = safeHabits.map((habit: { statuses: any[] }) => ({
     ...habit,
@@ -103,13 +115,38 @@ const HabitsChart = () => {
       }))
       .filter((status: { statuses: object }) => Object.keys(status.statuses).length > 0),
   }))
+
+  const filteredHabitsWithStatusInRange = habits
+    ?.map((habit) => {
+      // Filtrar status dentro do intervalo de datas
+      const filteredStatuses = habit.statuses
+        .map((status) => {
+          const filteredStatusEntries = Object.entries(status.statuses).filter(([date]) => {
+            const statusDate = new Date(date)
+            return statusDate >= startDate && statusDate <= endDate
+          })
+
+          return {
+            ...status,
+            statuses: Object.fromEntries(filteredStatusEntries),
+          }
+        })
+        .filter((status) => Object.keys(status.statuses).length > 0) // Mantém apenas status com entradas
+
+      return {
+        ...habit,
+        statuses: filteredStatuses,
+      }
+    })
+    .filter((habit) => habit.statuses.length > 0)
   // console.log()
   // @ts-ignore
   const chartData = processDataForChart(filteredHabits)
+  console.log(chartData)
 
   return (
-    <>
-      <div>
+    <ReportsStyle>
+      <div className="datePicker-Container">
         <DatePicker
           showIcon
           toggleCalendarOnIconClick
@@ -140,9 +177,9 @@ const HabitsChart = () => {
           showWeekNumbers
         />
       </div>
-      <div>
+      <div className="chart">
         <BarChart
-          width={500}
+          width={400}
           height={300}
           data={chartData}
           margin={{
@@ -163,7 +200,53 @@ const HabitsChart = () => {
         </BarChart>
         <BottomBar onTabChange={handleTabChange} value={selectedTab} />
       </div>
-    </>
+      <div>
+        <ul>
+          {filteredHabitsWithStatusInRange?.map((habit, i) => (
+            <li key={i}>
+              <div>
+                <span style={{ fontWeight: 'bold' }}>{habit.name}</span>
+                <ul>
+                  {habit.statuses.map((status, index) => {
+                    // Aqui você pode retornar as datas e seus respectivos valores de conclusão
+                    return (
+                      <li key={index}>
+                        {Object.entries(status.statuses).map(([date, value], idx) => {
+                          let conclusion
+                          let color
+                          switch (value) {
+                            case 10:
+                              conclusion = 'Concluído'
+                              color = '#82ca9d'
+                              break
+                            case 5:
+                              conclusion = 'Parcialmente Concluído'
+                              color = '#8884d8'
+                              break
+                            default:
+                              conclusion = 'Não Concluído'
+                              color = '#ffc658'
+                          }
+                          const formattedDate = format(new Date(date), 'dd/MM/yyyy')
+                          return (
+                            <div key={idx}>
+                              <div style={{ backgroundColor: color }}>
+                                {' '}
+                                {formattedDate} - {conclusion}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </ReportsStyle>
   )
 }
 

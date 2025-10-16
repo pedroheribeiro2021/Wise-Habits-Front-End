@@ -8,13 +8,18 @@ import { FaCheckDouble, FaCheck } from 'react-icons/fa'
 import BottomBar from '../../components/bottomNavigationBar'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { MdOutlineCancel } from 'react-icons/md'
+import { DashboardStyle } from './style'
+import { MdArrowRight } from 'react-icons/md'
+import { MdArrowLeft } from 'react-icons/md'
+import { VscCalendar } from 'react-icons/vsc'
 
 interface iStatus {
   id: number
   statuses: { [key: string]: number }
 }
 
-interface iHabits {
+export interface iHabits {
   id: string
   name: string
   description: string
@@ -154,88 +159,119 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
+    <DashboardStyle>
       <CreateHabitsModal />
-      <h2>Home</h2>
+      <h2>Início</h2>
+      <VscCalendar style={{ margin: '8px 0', fontSize: 60 }} />
       <div>
-        <p>Data Atual: {currentDate}</p>
-        <div>
-          <button onClick={navigateToPreviousDay}>Dia Anterior</button>
+        {/* <p>Data Atual: {currentDate}</p> */}
+        <div className="date_container">
+          <button onClick={navigateToPreviousDay} style={{ marginRight: 5 }}>
+            {/* Dia Anterior */}
+            <MdArrowLeft style={{ color: 'white', fontSize: 60 }} />
+          </button>
           <DatePicker
             selected={selectedDate}
             onChange={(date: Date) => setSelectedDate(date)}
             dateFormat="dd/MM/yyyy"
+            className='center'
           />
-          <button onClick={navigateToNextDay}>Próximo Dia</button>
+          <button onClick={navigateToNextDay} style={{ marginLeft: 5 }}>
+            {/* Próximo Dia */}
+            <MdArrowRight style={{ color: 'white', fontSize: 60 }} />
+          </button>
         </div>
         <ul>
           {habits?.map(
             (habit, i) =>
               shouldRenderHabit(habit) && (
                 // console.log(habit.weekDays)
-                <li key={i}>
+                <li key={i} className="habit_card">
                   <div>
-                    <span>{habit.name}</span>
-                    {habit.statuses.map((status) => {
-                      const statusDate = selectedDate.toISOString().split('T')[0]
-                      const statusValue = status.statuses[statusDate]
-                      if (statusValue === 10) {
-                        return <FaCheckDouble key={status.id} style={{ color: 'green' }} />
-                      } else if (statusValue === 5) {
-                        return <FaCheck key={status.id} style={{ color: 'green' }} />
-                      }
-                      return null
-                    })}
-                    <input
-                      // checked={habit.statuses.statusValue === 10}
-                      checked={habit.statuses.some(
-                        (status) =>
-                          status.statuses[selectedDate.toISOString().split('T')[0]] === 10,
-                      )}
-                      type="radio"
-                      name={`habito${i}`}
-                      id={`concluido${i}`}
-                      onChange={() => updateHabitStatus(habit.id, today, 10)}
-                    />
-                    <label htmlFor={`concluido${i}`}>Concluído</label>
-                    <input
-                      // checked={habit.statuses.statusValue === 5}
-                      checked={habit.statuses.some(
-                        (status) => status.statuses[selectedDate.toISOString().split('T')[0]] === 5,
-                      )}
-                      type="radio"
-                      name={`habito${i}`}
-                      id={`parcialmenteConcluido${i}`}
-                      onChange={() => updateHabitStatus(habit.id, today, 5)}
-                    />
-                    <label htmlFor={`parcialmenteConcluido${i}`}>Parcialmente concluído</label>
-                    <input
-                      // checked={habit.statuses.statusValue === 0}
-                      // value={habit.statuses.statusValue}
-                      checked={habit.statuses.some(
-                        (status) => status.statuses[selectedDate.toISOString().split('T')[0]] === 0,
-                      )}
-                      type="radio"
-                      name={`habito${i}`}
-                      id={`naoConcluido${i}`}
-                      onChange={() => updateHabitStatus(habit.id, today, 0)}
-                    />
-                    <label htmlFor={`naoConcluido${i}`}>Não concluído</label>
+                    <div className="header">
+                      <span style={{ fontWeight: 'bold' }}>{habit.name}</span>
+                      {habit.statuses.map((status) => {
+                        const statusDate = selectedDate.toISOString().split('T')[0]
+                        const statusValue = status.statuses[statusDate]
+                        if (statusValue === 10) {
+                          return <FaCheckDouble key={status.id} style={{ color: 'green' }} />
+                        } else if (statusValue === 5) {
+                          return <FaCheck key={status.id} style={{ color: 'green' }} />
+                        } else if (statusValue === 0) {
+                          return <MdOutlineCancel key={status.id} style={{ color: 'red' }} />
+                        }
+                        return null
+                      })}
+                    </div>
+                    <p>{habit.description}</p>
+                    <div className="status">
+                      <div className="status_container">
+                        <label htmlFor={`concluido${i}`}>Concluído</label>
+                        <input
+                          // checked={habit.statuses.statusValue === 10}
+                          checked={habit.statuses.some(
+                            (status) =>
+                              status.statuses[selectedDate.toISOString().split('T')[0]] === 10,
+                          )}
+                          type="radio"
+                          name={`habito${i}`}
+                          id={`concluido${i}`}
+                          onChange={() => updateHabitStatus(habit.id, today, 10)}
+                        />
+                      </div>
+                      <div className="status_container">
+                        <label htmlFor={`parcialmenteConcluido${i}`}>Parcialmente concluído</label>
+                        <input
+                          // checked={habit.statuses.statusValue === 5}
+                          checked={habit.statuses.some(
+                            (status) =>
+                              status.statuses[selectedDate.toISOString().split('T')[0]] === 5,
+                          )}
+                          type="radio"
+                          name={`habito${i}`}
+                          id={`parcialmenteConcluido${i}`}
+                          onChange={() => updateHabitStatus(habit.id, today, 5)}
+                        />
+                      </div>
+                      <div className="status_container">
+                        <label htmlFor={`naoConcluido${i}`}>Não concluído</label>
+                        <input
+                          // checked={habit.statuses.statusValue === 0}
+                          // value={habit.statuses.statusValue}
+                          checked={habit.statuses.some(
+                            (status) =>
+                              status.statuses[selectedDate.toISOString().split('T')[0]] === 0,
+                          )}
+                          type="radio"
+                          name={`habito${i}`}
+                          id={`naoConcluido${i}`}
+                          onChange={() => updateHabitStatus(habit.id, today, 0)}
+                        />
+                      </div>
+                    </div>
                     {/* {CheckIcons()} */}
                   </div>
-                  <p>{habit.description}</p>
                 </li>
               ),
           )}
         </ul>
       </div>
-      <div>
-        <button type="button" onClick={() => setCreateHabitsModalOpen(true)}>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 80,
+          // width: '100%',
+          // backgroundColor: '#f8f9fa', // Exemplo de cor de fundo
+          // borderTop: '1px solid #dee2e6', // Exemplo de borda
+          zIndex: 100, // Garante que a barra fique acima de outros elementos
+        }}
+      >
+        <button className="add_button" type="button" onClick={() => setCreateHabitsModalOpen(true)}>
           +
         </button>
       </div>
       <BottomBar onTabChange={handleTabChange} value={selectedTab} />
-    </div>
+    </DashboardStyle>
   )
 }
 
