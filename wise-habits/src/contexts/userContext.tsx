@@ -98,7 +98,7 @@ export const UserProvider = ({ children }: iUserProps) => {
 
   const userRegister = async (data: iDataRegister) => {
     await api
-      .post(`/users`, data)
+      .post(`/user`, data)
       .then((resp) => {
         console.log(resp)
         toast.success('Cadastro efetuado com sucesso!', {
