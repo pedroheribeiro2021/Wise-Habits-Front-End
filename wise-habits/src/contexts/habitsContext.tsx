@@ -27,13 +27,16 @@ export interface iHabitsContext {
 }
 
 export const HabitsContext = createContext<iHabitsContext>({
-    habits: null,
-    createHabits: () => {},
-    getHabits: async () => {},
-  })
+  habits: null,
+  createHabits: () => {},
+  getHabits: async () => {},
+})
 
 export const HabitsProvider = ({ children }: iHabitsProps) => {
   const [habits, setHabits] = useState<iHabits | null>(null)
+
+  const token = localStorage.getItem('@token')
+  // const id = localStorage.getItem('id')
 
   const getHabits = async (): Promise<void> => {
     try {
@@ -47,10 +50,23 @@ export const HabitsProvider = ({ children }: iHabitsProps) => {
   }
 
   const createHabits = async (data: iHabitsCreate) => {
+    // const today = new Date()
+    // const formattedDate = today.toISOString().split('T')[0]
+    console.log(token)
     try {
-      const resp = await api.post('/habits', data)
+      // getMoment()
+      const resp = await api.post('/habits', data, {
+        headers: { authorization: `Bearer ${token}` },
+      })
       console.log(resp.data)
       setHabits(resp.data)
+
+      // const habitStatus = await api.post(`/habits/${resp.data.id}/status`, {
+      //   statuses: { [formattedDate]: 0 }
+      // }, {
+      //   headers: { authorization: `Bearer ${token}` },
+      // })
+      // console.log(habitStatus.data)
     } catch (err) {
       console.log(err)
     }
