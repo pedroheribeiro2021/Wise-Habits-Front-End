@@ -41,9 +41,8 @@ export const HabitsProvider = ({ children }: iHabitsProps) => {
   const getHabits = async (): Promise<void> => {
     try {
       const { data } = await api.get('/habits')
-      console.log(data)
       setHabits(data)
-      return data
+      console.log(habits)
     } catch (error) {
       console.error(error)
     }
