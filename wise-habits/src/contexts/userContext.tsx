@@ -71,7 +71,7 @@ export const UserProvider = ({ children }: iUserProps) => {
         setUser(resp.data)
         localStorage.setItem('@token', resp.data.token)
         localStorage.setItem('@id', resp.data.id)
-        navigate('/dashboard')
+        navigate('/home')
         toast.success('Login efetuado com sucesso!', {
           position: 'top-right',
           autoClose: 2000,
