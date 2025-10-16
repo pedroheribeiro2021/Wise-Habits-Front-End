@@ -40,7 +40,9 @@ export const HabitsProvider = ({ children }: iHabitsProps) => {
 
   const getHabits = async (): Promise<void> => {
     try {
-      const { data } = await api.get('/habits')
+      const { data } = await api.get('/habits', {
+        headers: { authorization: `Bearer ${token}` },
+      })
       setHabits(data)
       console.log(habits)
     } catch (error) {

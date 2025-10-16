@@ -38,9 +38,15 @@ export const DashboardStyle = styled.main`
   .header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     span {
       margin-right: 5px;
     }
+  }
+
+  .name_icon {
+    display: flex;
+    align-items: center;
   }
 
   .habit_card {
@@ -50,6 +56,7 @@ export const DashboardStyle = styled.main`
       margin: 8px 0;
     }
   }
+
   .status {
     margin-top: 8px;
     display: flex;

@@ -39,7 +39,7 @@ const getLastDayOfMonth = () => {
 }
 
 const HabitsChart = () => {
-  const [selectedTab, setSelectedTab] = useState('')
+  const [selectedTab, setSelectedTab] = useState('graph')
   const [startDate, setStartDate] = useState(getFirstDayOfMonth()) // Inicializa com o primeiro dia do mês corrente
   const [endDate, setEndDate] = useState(getLastDayOfMonth()) // Inicializa com o último dia do mês corrente
   const [habits, setHabits] = useState<iHabits[] | null>(null)
@@ -47,9 +47,13 @@ const HabitsChart = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const safeHabits = habits || []
 
+  const token = localStorage.getItem('@token')
+
   const getHabits = async (): Promise<void> => {
     try {
-      const { data } = await api.get('/habits')
+      const { data } = await api.get('/habits', {
+        headers: { authorization: `Bearer ${token}` },
+      })
       setHabits(data)
       console.log(habits)
     } catch (error) {
@@ -227,54 +231,56 @@ const HabitsChart = () => {
       </div>
       <div style={{ marginTop: 15 }}>
         {/* <ul> */}
-          {filteredHabitsForSelectedDate?.length ? (
-            filteredHabitsForSelectedDate?.map((habit, i) => (
-              <li key={i}>
-                <div>
-                  {/* <span style={{ fontWeight: 'bold' }}>{habit.name}</span> */}
-                  <ul>
-                    {habit.statuses.map((status, index) => {
-                      return (
-                        <li key={index}>
-                          {Object.entries(status.statuses).map(([, value], idx) => {
-                            let conclusion
-                            let color
-                            switch (value) {
-                              case 10:
-                                conclusion = 'Concluído'
-                                color = '#82ca9d'
-                                break
-                              case 5:
-                                conclusion = 'Parcialmente Concluído'
-                                color = '#8884d8'
-                                break
-                              default:
-                                conclusion = 'Não Concluído'
-                                color = '#ffc658'
-                            }
-                            // const formattedDate = format(new Date(date), 'dd/MM/yyyy')
-                            return (
-                              <div key={idx}>
-                                <div style={{ backgroundColor: color }}>
-                                  {' '}
-                                  {/* {formattedDate} - {conclusion} */}
-                                  <span>
-                                    {habit.name} - {conclusion}
-                                  </span>
-                                </div>
+        {filteredHabitsForSelectedDate?.length ? (
+          filteredHabitsForSelectedDate?.map((habit, i) => (
+            <li key={i}>
+              <div>
+                {/* <span style={{ fontWeight: 'bold' }}>{habit.name}</span> */}
+                <ul>
+                  {habit.statuses.map((status, index) => {
+                    return (
+                      <li key={index}>
+                        {Object.entries(status.statuses).map(([, value], idx) => {
+                          let conclusion
+                          let color
+                          switch (value) {
+                            case 10:
+                              conclusion = 'Concluído'
+                              color = '#82ca9d'
+                              break
+                            case 5:
+                              conclusion = 'Parcialmente Concluído'
+                              color = '#8884d8'
+                              break
+                            default:
+                              conclusion = 'Não Concluído'
+                              color = '#ffc658'
+                          }
+                          // const formattedDate = format(new Date(date), 'dd/MM/yyyy')
+                          return (
+                            <div key={idx}>
+                              <div style={{ backgroundColor: color }}>
+                                {' '}
+                                {/* {formattedDate} - {conclusion} */}
+                                <span>
+                                  {habit.name} - {conclusion}
+                                </span>
                               </div>
-                            )
-                          })}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              </li>
-            ))
-          ) : (
-            <span style={{ display: 'flex', justifyContent: 'center', marginTop: 65 }}>Não há hábitos finalizados  :( </span>
-          )}
+                            </div>
+                          )
+                        })}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            </li>
+          ))
+        ) : (
+          <span style={{ display: 'flex', justifyContent: 'center', marginTop: 65 }}>
+            Não há hábitos finalizados :({' '}
+          </span>
+        )}
         {/* </ul> */}
       </div>
     </ReportsStyle>

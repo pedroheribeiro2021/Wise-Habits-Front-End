@@ -1,15 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './App.css'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import Login from './pages/login'
 import { Providers } from './components/providers/providers'
 import Register from './pages/register'
 import Dashboard from './pages/dashboard'
 import ReactModal from 'react-modal'
 import HabitsChart from './pages/reports'
+import { setupInterceptors } from './services/api'
 
 function App() {
   ReactModal.setAppElement('#root')
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    setupInterceptors(navigate)
+  }, [navigate])
+
   return (
     <main>
       <Providers>
