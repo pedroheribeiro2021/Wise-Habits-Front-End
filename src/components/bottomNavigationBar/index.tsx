@@ -1,7 +1,6 @@
 import { BottomNavigation, BottomNavigationAction } from '@mui/material'
 import React from 'react'
 import HomeIcon from '@mui/icons-material/Home'
-import PersonIcon from '@mui/icons-material/Person'
 import ShowChartIcon from '@mui/icons-material/ShowChart'
 import { useNavigate } from 'react-router-dom'
 

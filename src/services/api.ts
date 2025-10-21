@@ -3,8 +3,8 @@ import axios from 'axios'
 
 // Cria uma instância do Axios
 export const api = axios.create({
-    baseURL: 'https://wise-habits-back-end.vercel.app',
-    // baseURL: 'http://localhost:3003',
+    // baseURL: 'https://wise-habits-back-end.vercel.app',
+    baseURL: 'http://localhost:3004',
     timeout: 5000,
 })
 
