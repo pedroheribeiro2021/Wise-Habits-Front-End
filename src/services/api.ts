@@ -34,7 +34,7 @@ api.interceptors.response.use(
 
           // Limpa o localStorage
           localStorage.removeItem('@token')
-          localStorage.removeItem('@userID')
+          localStorage.removeItem('@id')
 
           // Mostra alerta para o usuário
           alert('Sessão expirada. Por favor, faça login novamente.')
@@ -69,7 +69,7 @@ export const setupInterceptors = (navigate: any) => {
             isRedirecting = true
 
             localStorage.removeItem('@token')
-            localStorage.removeItem('@userID')
+            localStorage.removeItem('@id')
 
             alert('Sessão expirada. Por favor, faça login novamente.')
             navigate('/')

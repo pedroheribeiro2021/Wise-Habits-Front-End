@@ -16,7 +16,7 @@ const BottomBar: React.FC<BottomBarProps> = ({ onTabChange, value }) => {
   const handleLogout = () => {
     if (window.confirm('Deseja realmente sair?')) {
       localStorage.removeItem('@token')
-      localStorage.removeItem('@userID')
+      localStorage.removeItem('@id')
       navigate('/')
     }
   }
