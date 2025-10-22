@@ -16,7 +16,7 @@ interface iHabitsRegister {
 }
 
 interface CreateHabitsModalProps {
-  onHabitCreated: () => Promise<void>
+  onHabitCreated: () => Promise<void> // ← Mantemos como Promise
 }
 
 const RegisterSchema = yup.object().shape({
@@ -28,8 +28,8 @@ const RegisterSchema = yup.object().shape({
 const CreateHabitsModal: React.FC<CreateHabitsModalProps> = ({ onHabitCreated }) => {
   const { isCreateHabitsModalOpen, setCreateHabitsModalOpen } = useModalContext()
   const { createHabits } = useHabitsContext()
-  const { getHabits } = useHabitsContext()
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false) // ← Estado para loading
   const weekDays = [
     'domingo',
     'segunda-feira',
@@ -43,26 +43,43 @@ const CreateHabitsModal: React.FC<CreateHabitsModalProps> = ({ onHabitCreated })
   const {
     register,
     handleSubmit,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors },
+    reset, // ← Adicionamos reset para limpar o form
   } = useForm<iHabitsRegister>({
     // resolver: yupResolver(RegisterSchema),
   })
 
   const closeModal = () => {
     setCreateHabitsModalOpen(false)
+    reset() // ← Limpa o form ao fechar
+    setSelectedWeekDays([]) // ← Limpa os dias selecionados
   }
 
-  const submit = (data: iHabitsRegister) => {
-    const habitData = {
-      ...data,
-      weekDays: selectedWeekDays.map((day) => day.toLowerCase()),
-    }
+  const submit = async (data: iHabitsRegister) => {
+    // ← Tornamos async
+    if (isSubmitting) return // ← Previne múltiplos envios
 
-    createHabits(habitData)
-    onHabitCreated()
-    console.log(habitData)
-    closeModal()
+    setIsSubmitting(true)
+
+    try {
+      const habitData = {
+        ...data,
+        weekDays: selectedWeekDays.map((day) => day.toLowerCase()),
+      }
+
+      // 🔥 AGUARDAMOS a criação do hábito
+      await createHabits(habitData)
+
+      // 🔥 AGUARDAMOS a atualização do dashboard
+      await onHabitCreated()
+
+      console.log(habitData)
+      closeModal()
+    } catch (error) {
+      console.error('Erro ao criar hábito:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleCheckboxChange = (day: string) => {
@@ -125,7 +142,9 @@ const CreateHabitsModal: React.FC<CreateHabitsModalProps> = ({ onHabitCreated })
               </React.Fragment>
             ))}
           </div>
-          <button type="submit">Criar</button>
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Criando...' : 'Criar'}
+          </button>
         </form>
       </div>
     </CreateHabitsModalStyled>
